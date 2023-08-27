@@ -1,0 +1,18 @@
+<!-- email_template.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Notification</title>
+</head>
+<body>
+    <!-- Your HTML content here -->
+    <h1>Welcome to Lumis 👋</h1>
+    <p><b>Last week's updates on Apple:</b></p>
+    <!-- ... rest of your email content ... -->
+    <p>{{ article_summary }}</p>
+    <p><b>Articles</b></p>
+    {% for url in urls %}
+    <p>{{ url }}</p>
+    {% endfor %}
+</body>
+</html>
