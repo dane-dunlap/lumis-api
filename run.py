@@ -4,7 +4,7 @@ from app import app
 from app.routes import process_due_alerts
 from apscheduler.triggers.interval import IntervalTrigger
 from apscheduler.triggers.cron import CronTrigger
-
+import os
 
 scheduler = BackgroundScheduler()
 
@@ -33,4 +33,4 @@ scheduler = BackgroundScheduler()
 
 if __name__ == '__main__':
     #setup_scheduler()
-    app.run(host='0.0.0.0', port=5002)
+     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
