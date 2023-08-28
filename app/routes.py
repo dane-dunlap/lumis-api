@@ -103,8 +103,8 @@ def articles_summarizer(articles):
 
 def send_lumis(alert):
     articles = fetch_articles_for_alert(alert)
-    #final_summary = articles_summarizer(articles)
-    final_summary = "Apple has released two new features for iOS users – Remove Subject From Background and Create and Save Your Own Stickers – to enhance their photo-editing experience. Remove Subject offers the ability to quickly and easily erase unwanted people and objects from photos, while Create and Save Your Own Stickers lets users turn their own snapshots and text into custom stickers. Additionally, the AirPods Pro 2 has been upgraded to include improved sound quality, active noise cancellation, spatial audio, transparency mode, and"
+    final_summary = articles_summarizer(articles)
+    #final_summary = "Apple has released two new features for iOS users – Remove Subject From Background and Create and Save Your Own Stickers – to enhance their photo-editing experience. Remove Subject offers the ability to quickly and easily erase unwanted people and objects from photos, while Create and Save Your Own Stickers lets users turn their own snapshots and text into custom stickers. Additionally, the AirPods Pro 2 has been upgraded to include improved sound quality, active noise cancellation, spatial audio, transparency mode, and"
     subject = f"Lumis Alert: {alert.company_name}"
     recipient_email = alert.user_email
     url_list = [article['url'] for article in articles]    
@@ -119,7 +119,7 @@ def fetch_articles_for_alert(alert):
         'from': date.today(),
         'to': date.today() - timedelta(days=get_days_from_cadence(alert.cadence)),
         'apiKey': news_api_key,
-        'pageSize': 2, 
+        'pageSize': 5, 
         'language': 'en'
     }
 
