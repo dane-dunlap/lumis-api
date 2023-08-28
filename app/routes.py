@@ -56,6 +56,7 @@ def set_alert():
     try:
         db.session.add(new_alert)
         db.session.commit()
+        send_lumis(new_alert)
         return jsonify({"message": "Success"}), 201
     except:
         return jsonify({"message": "Error saving to database"}), 500
