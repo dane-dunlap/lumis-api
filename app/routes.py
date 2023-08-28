@@ -108,7 +108,7 @@ def send_lumis(alert):
     subject = f"Lumis Alert: {alert.company_name}"
     recipient_email = alert.user_email
     url_list = [article['url'] for article in articles]    
-    send_email(subject,final_summary,recipient_email,url_list)
+    send_email(subject,final_summary,recipient_email,url_list,alert)
     
     return jsonify({"message": "Success."}), 200
 
@@ -136,16 +136,18 @@ def fetch_articles_for_alert(alert):
         return jsonify({"message": f"Error fetching articles. API responded with {response.status_code}"}), 500
 
 
-def send_email(subject, summary,recipient_email,urls):
+def send_email(subject, summary,recipient_email,urls,alert):
     
     sg = sendgrid.SendGridAPIClient(api_key=sendgrid_key)
     from_email = Email("danecooperdunlap@gmail.com")
     to_email = To(recipient_email)
-    html_content = render_template('email.html', article_summary=summary,urls = urls)
+    cadence = alert.cadence
+    company_name = alert.company_name
+    html_content = render_template('email.html', article_summary=summary,urls = urls,cadence=cadence,company_name=company_name)
     content = Content("text/html", html_content)
     mail = Mail(from_email, to_email, subject, content)
     
-    
+
     response = sg.client.mail.send.post(request_body=mail.get())
     print(response.status_code)
     print(response.body)
