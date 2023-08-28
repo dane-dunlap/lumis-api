@@ -39,7 +39,7 @@ news_api_endpoint = "https://newsapi.org/v2/everything"
 @app.route('/api/create_alert', methods=['POST'])
 def set_alert():
     data = request.json
-    company_name = '"' + data['company'].strip() + '"'
+    company_name = data['company'].strip()
     cadence = data['cadence'].strip()
     user_email = data['email'].strip()
 
