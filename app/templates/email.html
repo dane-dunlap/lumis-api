@@ -77,8 +77,8 @@
         </div>
         <div class="content">
             {% if cadence == "Daily" %}
-                <p class="bold">Updates on {{company_name }} over the last day:</p>
-            {% if cadence == "Weekly" %}
+                <p class="bold">Updates on {{ company_name }} over the last day:</p>
+            {% elif cadence == "Weekly" %}
                 <p class="bold">Last week's updates on {{ company_name }}:</p>
             {% endif %}
             <p>{{ article_summary }}</p>
