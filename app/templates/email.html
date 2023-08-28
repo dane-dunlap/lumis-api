@@ -1,102 +1,18 @@
+<!-- email_template.html -->
 <!DOCTYPE html>
 <html>
 <head>
     <title>Email Notification</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f6f9fc;
-            padding: 40px 0;
-            margin: 0;
-            color: #333;
-        }
-
-        .email-container {
-            max-width: 600px;
-            background-color: #ffffff;
-            margin: 0 auto;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .header {
-            background-color: #8e88fd;
-            color: #fff;
-            padding: 20px 40px;
-        }
-
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-
-        .content {
-            padding: 40px;
-        }
-
-        h1 {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        p {
-            margin-bottom: 16px;
-            font-size: 16px;
-            line-height: 1.5;
-        }
-
-        p.bold {
-            font-weight: bold;
-        }
-
-        a {
-            color: #8e88fd;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .footer {
-            background-color: #f6f9fc;
-            padding: 20px 40px;
-            text-align: center;
-            font-size: 12px;
-            color: #7f8c8d;
-        }
-    </style>
 </head>
 <body>
-    <div class="email-container">
-        <div class="header">
-            <h1>Welcome to Lumis 👋</h1>
-        </div>
-        <div class="content">
-            {% if cadence == "Daily" %}
-            <p class="bold">Updates on {{ company_name }} over the last day</p>
-            {% if cadence == "Weekly" %}
-            <p class="bold">Last week's updates on {{ company_name }}:</p>
-            <p>{{ article_summary }}</p>
-            <p class="bold">Articles</p>
-            {% for url in urls %}
-            <p><a href="{{ url }}">{{ url }}</a></p>
-            {% endfor %}
-        </div>
-        <div>
-            {% if cadence == "Daily" %}
-            <p>This is a daily alert. You'll receive another update tomorrow with more insights on {{ company_name }}.</p>
-            {% elif cadence == "weekly" %}
-            <p>This is a weekly alert. You'll receive another update next week with more insights on {{ company_name }}.</p>
-        </div>
-        <div class="footer">
-            Thank you for being a part of Lumis. <br>
-            <a href="#">Manage your subscriptions</a>
-        </div>
-    </div>
+    <!-- Your HTML content here -->
+    <h1>Welcome to Lumis 👋</h1>
+    <p><b>Last week's updates on Apple:</b></p>
+    <!-- ... rest of your email content ... -->
+    <p>{{ article_summary }}</p>
+    <p><b>Articles</b></p>
+    {% for url in urls %}
+    <p>{{ url }}</p>
+    {% endfor %}
 </body>
 </html>
-

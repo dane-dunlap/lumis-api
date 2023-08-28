@@ -39,7 +39,7 @@ news_api_endpoint = "https://newsapi.org/v2/everything"
 @app.route('/api/create_alert', methods=['POST'])
 def set_alert():
     data = request.json
-    company_name = data['company'].strip()
+    company_name = '"' + data['company'].strip() + '"'
     cadence = data['cadence'].strip()
     user_email = data['email'].strip()
 
@@ -105,13 +105,10 @@ def send_lumis(alert):
     articles = fetch_articles_for_alert(alert)
     #final_summary = articles_summarizer(articles)
     final_summary = "Apple has released two new features for iOS users – Remove Subject From Background and Create and Save Your Own Stickers – to enhance their photo-editing experience. Remove Subject offers the ability to quickly and easily erase unwanted people and objects from photos, while Create and Save Your Own Stickers lets users turn their own snapshots and text into custom stickers. Additionally, the AirPods Pro 2 has been upgraded to include improved sound quality, active noise cancellation, spatial audio, transparency mode, and"
-    
+    subject = f"Lumis Alert: {alert.company_name}"
     recipient_email = alert.user_email
-    url_list = [article['url'] for article in articles]
-    cadence = alert.cadence
-    company_name = alert.company_name
-    subject = f"Lumis Alert: {company_name}"
-    send_email(subject,final_summary,recipient_email,url_list,cadence,company_name)
+    url_list = [article['url'] for article in articles]    
+    send_email(subject,final_summary,recipient_email,url_list)
     
     return jsonify({"message": "Success."}), 200
 
@@ -139,12 +136,12 @@ def fetch_articles_for_alert(alert):
         return jsonify({"message": f"Error fetching articles. API responded with {response.status_code}"}), 500
 
 
-def send_email(subject, summary,recipient_email,urls,cadence,company_name):
+def send_email(subject, summary,recipient_email,urls):
     
     sg = sendgrid.SendGridAPIClient(api_key=sendgrid_key)
     from_email = Email("danecooperdunlap@gmail.com")
     to_email = To(recipient_email)
-    html_content = render_template('email.html', article_summary=summary,urls = urls,cadence=cadence,company_name=company_name)
+    html_content = render_template('email.html', article_summary=summary,urls = urls)
     content = Content("text/html", html_content)
     mail = Mail(from_email, to_email, subject, content)
     
