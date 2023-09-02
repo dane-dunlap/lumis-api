@@ -28,4 +28,13 @@ class Alert(db.Model):
     next_due_date = db.Column(db.Date, nullable=True)
 
 
+    def to_dict(self):
+        return {
+            'company_name': self.company_name,
+            'cadence': self.cadence,
+            'user_email': self.user_email,
+            'next_due_date': self.next_due_date.strftime('%Y-%m-%d')  # assuming it's a date object
+        }
+
+
 

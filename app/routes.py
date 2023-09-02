@@ -56,7 +56,7 @@ def set_alert():
     try:
         db.session.add(new_alert)
         db.session.commit()
-        return jsonify({"message": "Success","alert": new_alert}), 201
+        return jsonify({"message": "Success","alert": new_alert.to_dict()}), 201
     except:
         return jsonify({"message": "There was an error saving this alert"}), 500
 
