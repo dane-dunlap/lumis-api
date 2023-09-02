@@ -30,6 +30,7 @@ class Alert(db.Model):
 
     def to_dict(self):
         return {
+            'id': self.id,
             'company_name': self.company_name,
             'cadence': self.cadence,
             'user_email': self.user_email,
