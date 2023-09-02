@@ -56,12 +56,12 @@ def set_alert():
     try:
         db.session.add(new_alert)
         db.session.commit()
-        send_lumis(new_alert)
-        return jsonify({"message": "Success"}), 201
+        return jsonify({"message": "Success","alert": new_alert}), 201
     except:
-        return jsonify({"message": "Error saving to database"}), 500
+        return jsonify({"message": "There was an error saving this alert"}), 500
 
-    
+
+
 
 
 def get_days_from_cadence(cadence):
@@ -101,7 +101,12 @@ def articles_summarizer(articles):
     return final_overall_summary
 
 
-def send_lumis(alert):
+@app.route('/api/send_alert', methods=['POST'])
+def send_lumis():
+    alert_data = request.json.get('alert')
+    alert_id = alert_data['id']
+    alert = db.session.query(Alert).filter_by(id=alert_id).first()
+
     articles = fetch_articles_for_alert(alert)
     final_summary = articles_summarizer(articles)
     #final_summary = "Apple has released two new features for iOS users – Remove Subject From Background and Create and Save Your Own Stickers – to enhance their photo-editing experience. Remove Subject offers the ability to quickly and easily erase unwanted people and objects from photos, while Create and Save Your Own Stickers lets users turn their own snapshots and text into custom stickers. Additionally, the AirPods Pro 2 has been upgraded to include improved sound quality, active noise cancellation, spatial audio, transparency mode, and"
