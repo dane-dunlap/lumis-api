@@ -56,7 +56,7 @@ def set_alert():
     try:
         db.session.add(new_alert)
         db.session.commit()
-        return jsonify({"message": "Success"}), 201
+        return jsonify({"message": "Success","alert": new_alert}), 201
     except:
         return jsonify({"message": "There was an error saving this alert"}), 500
 
@@ -73,9 +73,6 @@ def get_days_from_cadence(cadence):
     else:
         # Default to daily if the cadence is not recognized
         return 1
-
-
-
 
 
 def articles_summarizer(articles):
