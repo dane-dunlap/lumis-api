@@ -206,12 +206,24 @@ def send_email(subject, summary,recipient_email,urls,alert):
     return response.status_code
 
 def process_due_alerts():
-    logging.info("Started processing due alerts")
     with app.app_context():
+        logging.info("Started processing due alerts")
+        
+        # Query the database to fetch the alerts
         due_alerts = Alert.query.filter_by(next_due_date=date.today()).all()
-        for alert in due_alerts:
-            send_lumis(alert)
+
+        # Log the number of alerts found
+        logging.info(f"Found {len(due_alerts)} due alerts for processing.")
+        
+        try:
+            for alert in due_alerts:
+                logging.info(f"Processing alert with ID: {alert.id}")
+                send_lumis(alert)
+        except Exception as e:
+            logging.error(f"Error processing alert: {str(e)}")
+
     logging.info("Finished processing due alerts")
+
 
 
     
