@@ -1,33 +1,37 @@
 from datetime import datetime, timedelta, date
 import requests
 import json
+from dotenv import load_dotenv
+import os
 
 
-NEWS_API_KEY = 'eb9d2fb0-45ba-4081-bc29-1e09413dbbbe'
+
+load_dotenv()
+
+
+news_api_key = os.environ.get('NEWS_API_KEY')
 news_api_endpoint = "http://eventregistry.org/api/v1/article/getArticles"
-company_name = '"'+ "Stake Real Estate" + '"'
+company_name = '"'+ "Nvidia" + '"'
 def fetch_articles_for_alert():
     params = {
   "action": "getArticles",
   "keyword": company_name,
   "articlesPage": 1,
-  "conceptURI":"https://en.wikipedia.org/wiki/Nvidia",
+  #"conceptURI":"https://en.wikipedia.org/wiki/Nvidia",
   "eventFilter": "skipArticlesWithoutEvent",
   "keywordLoc": "title",
   "articlesCount": 5,
   "lang": "eng",
-  "dateStart": date.today() - timedelta(days=24), 
+  "dateStart": date.today() - timedelta(days=1), 
   "dateEnd": date.today(),
   "articlesSortBy": "sourceImportanceRank",
-  "articlesArticleBodyLen": 3,
+  "articlesArticleBodyLen": -1,
   "resultType": "articles",
-  "includeArticleCategories":"True",
-  "includeArticleConcepts": "True",
   "dataType": [
     "news",
     "pr"
   ],
-  "apiKey": "eb9d2fb0-45ba-4081-bc29-1e09413dbbbe",
+  "apiKey": news_api_key,
   "forceMaxDataTimeWindow": 31
 }
 

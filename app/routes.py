@@ -75,7 +75,15 @@ def get_days_from_cadence(cadence):
         return 1
 
 
-def articles_summarizer(articles):
+def articles_summarizer(news_api_response):
+    articles = news_api_response['articles']
+    company_name = news_api_response['company_name']
+    cadence = news_api_response['cadence']
+    if cadence == "Daily":
+        cadence = "day"
+    else:
+        cadence ="week"
+    
     article_contents = [article['body'] for article in articles]
     summaries = []
     for content in article_contents:
@@ -86,16 +94,23 @@ def articles_summarizer(articles):
         max_tokens=150  # Adjust based on the length you want
         )
         summaries.append(response.choices[0].text.strip())
+        print(response.choices[0].text.strip())
+        print("xxxxxxxxxxxxxxxxxxxx")
     
-    combined_content = "\n\n".join(summaries)
-    prompt = f"Provide a high-level summary of the following news article summaries:\n\n{combined_content}"
+    combined_content = "\nArticle Summary:\n" + "\nArticle Summary:\n".join(summaries)
+    prompt = f"Each of these is a summary of the top news for {company_name} over the last {cadence} , please provide a high-level summary for {company_name} over the last {cadence}:\n\n{combined_content}"
+    print(prompt)
+    print("yyyyyyyyyyyyyyyyyyyyyyy")
 
     response = openai.Completion.create(
         model="text-davinci-003",  # or another suitable model
         prompt=prompt,
-        max_tokens=100  # Adjust based on the length you want
+        max_tokens=300  # Adjust based on the length you want
     )
     final_overall_summary = response.choices[0].text.strip()
+    print("overall summary")
+    print("===============================")
+    print(final_overall_summary)
     return final_overall_summary
 
 
@@ -150,7 +165,11 @@ def fetch_articles_for_alert(alert):
     if response.status_code == 200:
         articles = response.json()['articles']['results']
         if articles:
-            return articles
+            return {
+                "articles": articles,
+                "company_name": alert.company_name,
+                "cadence": alert.cadence
+            }
         else:
             return jsonify({"message": "No articles found for this alert."}), 404
     else:
