@@ -148,7 +148,7 @@ def fetch_articles_for_alert(alert):
     response = requests.get(news_api_endpoint, params=params)
 
     if response.status_code == 200:
-        articles = response.json()['articles']
+        articles = response.json()['articles']['results']
         if articles:
             return articles
         else:
