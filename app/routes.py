@@ -103,7 +103,7 @@ def articles_summarizer(news_api_response):
     messages = [
         {
             "role": "user",
-            "content": f"Each of these is a summary of the top news for {company_name} over the last {cadence} , please provide a high-level summary for {company_name} over the last {cadence}. Please only include information about {company_name}:\n\n{combined_content}"
+            "content": f"Each of these is a summary of the top news for {company_name} over the last {cadence} , please provide a high-level summary for {company_name} over the last {cadence}. Please only include information about {company_name} and make sure the response is at least 120 words long:\n\n{combined_content}"
         }
     ]
     response = openai.ChatCompletion.create(
