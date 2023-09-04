@@ -98,7 +98,7 @@ def articles_summarizer(news_api_response):
         print("xxxxxxxxxxxxxxxxxxxx")
     
     combined_content = "\nArticle Summary:\n" + "\nArticle Summary:\n".join(summaries)
-    prompt = f"Each of these is a summary of the top news for {company_name} over the last {cadence} , please provide a high-level summary for {company_name} over the last {cadence}:\n\n{combined_content}"
+    prompt = f"Each of these is a summary of the top news for {company_name} over the last {cadence} , please provide a high-level summary for {company_name} over the last {cadence}. Please only include information about {company_name}:\n\n{combined_content}"
     print(prompt)
     print("yyyyyyyyyyyyyyyyyyyyyyy")
 
@@ -126,7 +126,7 @@ def send_lumis():
     #final_summary = "Apple has released two new features for iOS users – Remove Subject From Background and Create and Save Your Own Stickers – to enhance their photo-editing experience. Remove Subject offers the ability to quickly and easily erase unwanted people and objects from photos, while Create and Save Your Own Stickers lets users turn their own snapshots and text into custom stickers. Additionally, the AirPods Pro 2 has been upgraded to include improved sound quality, active noise cancellation, spatial audio, transparency mode, and"
     subject = f"Lumis Alert: {alert.company_name}"
     recipient_email = alert.user_email
-    url_list = [article['url'] for article in articles]    
+    url_list = [article['url'] for article in articles["articles"]]    
     send_email(subject,final_summary,recipient_email,url_list,alert)
     
     try:
