@@ -125,7 +125,7 @@ def send_lumis():
     news_api_response = fetch_articles_for_alert(alert)
     if "error" in news_api_response:
         final_summary = news_api_response["message"]
-        url_list = ["No articles"]
+        url_list = []
         send_email(subject,final_summary,recipient_email,url_list,alert)
     else:
         final_summary = articles_summarizer(news_api_response)    
@@ -174,7 +174,7 @@ def fetch_articles_for_alert(alert):
                 "cadence": alert.cadence
             }
         else:
-            return {"message": "No articles found for this alert.", "error": 404}
+            return {"message": f"No recent news was found for {alert.company_name} over the alert period", "error": 404}
 
     else:
         print(f"Error {response.status_code}: {response.text}")
