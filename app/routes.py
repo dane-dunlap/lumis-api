@@ -92,7 +92,7 @@ def articles_summarizer(news_api_response):
         ]
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
-            messages=messages
+            messages=messages,
             max_tokens= 1000
         )
         summaries.append(response.choices[0].message['content'].strip())
@@ -108,7 +108,7 @@ def articles_summarizer(news_api_response):
     ]
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=messages
+        messages=messages,
         max_tokens=1000
     )
     
