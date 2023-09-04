@@ -34,3 +34,7 @@ scheduler = BackgroundScheduler()
 if __name__ == '__main__':
     #setup_scheduler()
      app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
+     print("This is running")
+     process_due_alerts()
+     print("it ran")
+
