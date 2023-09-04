@@ -103,9 +103,9 @@ def articles_summarizer(news_api_response):
     print("yyyyyyyyyyyyyyyyyyyyyyy")
 
     response = openai.Completion.create(
-        model="text-davinci-003",  # or another suitable model
+        model="gpt-3.5-turbo",  # or another suitable model
         prompt=prompt,
-        max_tokens=300  # Adjust based on the length you want
+        max_tokens=500  # Adjust based on the length you want
     )
     final_overall_summary = response.choices[0].text.strip()
     print(response)
