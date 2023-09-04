@@ -11,7 +11,7 @@ load_dotenv()
 
 news_api_key = os.environ.get('NEWS_API_KEY')
 news_api_endpoint = "http://eventregistry.org/api/v1/article/getArticles"
-company_name = '"'+ "Nvidia" + '"'
+company_name = '"'+ "Snowflake" + '"'
 def fetch_articles_for_alert():
     params = {
   "action": "getArticles",

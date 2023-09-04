@@ -122,12 +122,16 @@ def send_lumis():
     alert_id = alert_data['id']
     alert = db.session.query(Alert).filter_by(id=alert_id).first()
     print("Alert - company name:",alert.company_name)
-    articles = fetch_articles_for_alert(alert)
-    final_summary = articles_summarizer(articles)
+    news_api_response = fetch_articles_for_alert(alert)
+    if "error" in news_api_response:
+        print(news_api_response["message"])
+        final_summary = news_api_response["message"]
+    else:
+        final_summary = articles_summarizer(news_api_response)
     #final_summary = "Apple has released two new features for iOS users – Remove Subject From Background and Create and Save Your Own Stickers – to enhance their photo-editing experience. Remove Subject offers the ability to quickly and easily erase unwanted people and objects from photos, while Create and Save Your Own Stickers lets users turn their own snapshots and text into custom stickers. Additionally, the AirPods Pro 2 has been upgraded to include improved sound quality, active noise cancellation, spatial audio, transparency mode, and"
     subject = f"Lumis Alert: {alert.company_name}"
     recipient_email = alert.user_email
-    url_list = [article['url'] for article in articles["articles"]]    
+    url_list = [article['url'] for article in news_api_response["articles"]]    
     send_email(subject,final_summary,recipient_email,url_list,alert)
     
     try:
@@ -172,10 +176,12 @@ def fetch_articles_for_alert(alert):
                 "cadence": alert.cadence
             }
         else:
-            return jsonify({"message": "No articles found for this alert."}), 404
+            return {"message": "No articles found for this alert.", "error": 404}
+
     else:
         print(f"Error {response.status_code}: {response.text}")
-        return jsonify({"message": f"Error fetching articles. API responded with {response.status_code}"}), 500
+        return {"message": f"Error fetching articles. API responded with {response.status_code}", "error": 500}
+
 
 
 def send_email(subject, summary,recipient_email,urls,alert):
