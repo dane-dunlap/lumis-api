@@ -121,7 +121,7 @@ def articles_summarizer(news_api_response):
 
 
 @app.route('/api/send_alert', methods=['POST'])
-def send_lumis():
+def send_lumis(alert=None):
     alert_data = request.json.get('alert')
     alert_id = alert_data['id']
     alert = db.session.query(Alert).filter_by(id=alert_id).first()
