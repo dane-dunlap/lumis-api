@@ -76,7 +76,7 @@ def get_days_from_cadence(cadence):
 
 
 def articles_summarizer(articles):
-    article_contents = [article['content'] for article in articles]
+    article_contents = [article['body'] for article in articles]
     summaries = []
     for content in article_contents:
         prompt = f"Provide a concise summary for the following news article:\n\n{content}"
