@@ -108,6 +108,7 @@ def articles_summarizer(news_api_response):
         max_tokens=300  # Adjust based on the length you want
     )
     final_overall_summary = response.choices[0].text.strip()
+    print(response)
     print("overall summary")
     print("===============================")
     print(final_overall_summary)
