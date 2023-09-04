@@ -119,28 +119,34 @@ def articles_summarizer(news_api_response):
     print(final_overall_summary)
     return final_overall_summary
 
-
-@app.route('/api/send_alert', methods=['POST'])
-def send_lumis(alert=None):
-    alert_data = request.json.get('alert')
-    alert_id = alert_data['id']
-    alert = db.session.query(Alert).filter_by(id=alert_id).first()
+def send_alert_util(alert):
     subject = f"Lumis Alert: {alert.company_name}"
     recipient_email = alert.user_email
     news_api_response = fetch_articles_for_alert(alert)
+
     if "error" in news_api_response:
         final_summary = news_api_response["message"]
         url_list = []
-        send_email(subject,final_summary,recipient_email,url_list,alert)
     else:
         final_summary = articles_summarizer(news_api_response)    
-        url_list = [article['url'] for article in news_api_response["articles"]]    
-        send_email(subject,final_summary,recipient_email,url_list,alert)
-    
+        url_list = [article['url'] for article in news_api_response["articles"]]
+
+    send_email(subject,final_summary,recipient_email,url_list,alert)
+
+
+@app.route('/api/send_alert', methods=['POST'])
+def send_lumis():
+    alert_data = request.json.get('alert')
+    alert_id = alert_data['id']
+    alert = db.session.query(Alert).filter_by(id=alert_id).first()
+
+    send_alert_util(alert)
+
     try:
         return jsonify({"message": "Success"}), 201
     except:
         return jsonify({"message": "There was an error sending this alert to email"}), 500
+
 
 
 def fetch_articles_for_alert(alert):
