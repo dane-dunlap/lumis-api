@@ -16,6 +16,7 @@ import logging
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, validators
 from werkzeug.security import generate_password_hash
+from app.models import Alert,User
 
 
 load_dotenv()
@@ -58,3 +59,7 @@ def articles_summarizer(article_contents):
     print(final_overall_summary)
 
 articles_summarizer(article_contents)
+
+due_alerts = Alert.query.filter_by(next_due_date=date.today()).all()
+print(due_alerts)
+

@@ -239,3 +239,9 @@ def register():
         return jsonify({"message": "Registration successful"})
 
     return jsonify({"message": "Validation failed", "errors": form.errors}), 400
+
+
+@app.route('/test_alerts', methods=['GET'])
+def test_alerts():
+    process_due_alerts()
+    return "Alert processing completed!"
