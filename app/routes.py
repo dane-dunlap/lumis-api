@@ -82,32 +82,35 @@ def articles_summarizer(news_api_response):
     if cadence == "Daily":
         cadence = "day"
     else:
-        cadence ="week"
+        cadence = "week"
     
     article_contents = [article['body'] for article in articles]
     summaries = []
     for content in article_contents:
-        prompt = f"Provide a concise summary for the following news article:\n\n{content}"
+        messages = [
+            {"role": "user", "content": f"Provide a concise summary for the following news article:\n\n{content}"}
+        ]
         response = openai.ChatCompletion.create(
-        model="text-davinci-003",  # or another suitable model
-        prompt=prompt,
-        max_tokens=150  # Adjust based on the length you want
+            model="gpt-3.5-turbo",
+            messages=messages
         )
-        summaries.append(response.choices[0].text.strip())
-        print(response.choices[0].text.strip())
+        summaries.append(response.choices[0].message['content'].strip())
+        print(response.choices[0].message['content'].strip())
         print("xxxxxxxxxxxxxxxxxxxx")
     
     combined_content = "\nArticle Summary:\n" + "\nArticle Summary:\n".join(summaries)
-    prompt = f"Each of these is a summary of the top news for {company_name} over the last {cadence} , please provide a high-level summary for {company_name} over the last {cadence}. Please only include information about {company_name}:\n\n{combined_content}"
-    print(prompt)
-    print("yyyyyyyyyyyyyyyyyyyyyyy")
-
-    response = openai.Completion.create(
-        model="gpt-3.5-turbo",  # or another suitable model
-        prompt=prompt,
-        max_tokens=500  # Adjust based on the length you want
+    messages = [
+        {
+            "role": "user",
+            "content": f"Each of these is a summary of the top news for {company_name} over the last {cadence} , please provide a high-level summary for {company_name} over the last {cadence}. Please only include information about {company_name}:\n\n{combined_content}"
+        }
+    ]
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages
     )
-    final_overall_summary = response.choices[0].text.strip()
+    
+    final_overall_summary = response.choices[0].message['content'].strip()
     print(response)
     print("overall summary")
     print("===============================")
