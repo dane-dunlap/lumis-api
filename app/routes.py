@@ -88,7 +88,7 @@ def articles_summarizer(news_api_response):
     summaries = []
     for content in article_contents:
         prompt = f"Provide a concise summary for the following news article:\n\n{content}"
-        response = openai.Completion.create(
+        response = openai.ChatCompletion.create(
         model="text-davinci-003",  # or another suitable model
         prompt=prompt,
         max_tokens=150  # Adjust based on the length you want
