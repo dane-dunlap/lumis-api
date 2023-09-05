@@ -226,7 +226,6 @@ def process_due_alerts():
         logging.info("Started processing due alerts")
         due_alerts = Alert.query.filter_by(next_due_date=date.today()).all()
         logging.info(f"Found {len(due_alerts)} due alerts for processing.")
-        
         try:
             for alert in due_alerts:
                 logging.info(f"Processing alert with ID: {alert.id}")
