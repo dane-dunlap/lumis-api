@@ -17,7 +17,14 @@ from apscheduler.triggers.interval import IntervalTrigger
 import logging
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, validators
+from flask import session
+from functools import wraps
+
 from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash
+
+
+
 
 
 
@@ -33,6 +40,58 @@ openai.api_key = os.environ.get('OPENAI_KEY')
 sendgrid_key = os.environ.get('SENDGRID_KEY')
 news_api_key = os.environ.get('NEWS_API_KEY')
 news_api_endpoint = "http://eventregistry.org/api/v1/article/getArticles"
+
+
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', [validators.Length(min=4, max=25)])
+    email = StringField('Email Address', [validators.Length(min=6, max=35), validators.Email()])
+    password = PasswordField('Password', [
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Passwords must match')
+    ])
+    confirm = PasswordField('Repeat Password')
+
+
+@app.route('/api/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    form = RegistrationForm(data=data, csrf_enabled=False)  # We're not using CSRF here.
+
+    if form.validate():
+        hashed_password = generate_password_hash(form.password.data, method='sha256')
+        new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        
+        return jsonify({"message": "Registration successful"})
+
+    return jsonify({"message": "Validation failed", "errors": form.errors}), 400
+
+
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    user = User.query.filter_by(email=data['email']).first()  # Use email here
+
+    if not user or not user.check_password(data['password']):
+        return jsonify({"message": "Invalid email or password"}), 401
+
+    session['email'] = user.email  # Store the email in the session
+    return jsonify({"message": "Logged in successfully"})
+
+@app.route('/api/logout', methods=['POST'])
+def logout():
+    session.pop('email', None)
+    return jsonify({"message": "Logged out successfully"})
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'email' not in session:  # Check for email in session
+            return jsonify({"message": "Please log in to access this route."}), 401
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 
@@ -239,33 +298,12 @@ def process_due_alerts():
 
 
     
-class RegistrationForm(FlaskForm):
-    username = StringField('Username', [validators.Length(min=4, max=25)])
-    email = StringField('Email Address', [validators.Length(min=6, max=35), validators.Email()])
-    password = PasswordField('Password', [
-        validators.DataRequired(),
-        validators.EqualTo('confirm', message='Passwords must match')
-    ])
-    confirm = PasswordField('Repeat Password')
 
-
-@app.route('/api/register', methods=['POST'])
-def register():
-    data = request.get_json()
-    form = RegistrationForm(data=data, csrf_enabled=False)  # We're not using CSRF here.
-
-    if form.validate():
-        hashed_password = generate_password_hash(form.password.data, method='sha256')
-        new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
-        
-        return jsonify({"message": "Registration successful"})
-
-    return jsonify({"message": "Validation failed", "errors": form.errors}), 400
 
 
 @app.route('/test_alerts', methods=['GET'])
 def test_alerts():
     process_due_alerts()
     return "Alert processing completed!"
+
+
