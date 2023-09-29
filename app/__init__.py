@@ -9,19 +9,12 @@ import os
 
 
 app = Flask(__name__)
-DATABASE_URL = os.environ.get('DATABASE_URL').replace("postgres://", "postgresql://")
+DATABASE_URL = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 CORS(app, resources={r"/api/*": {"origins": "https://lumis-react.vercel.app"}})
 
-
-
-
-
-
-
-
-
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+from . import models
