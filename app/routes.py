@@ -10,7 +10,7 @@ from sendgrid.helpers.mail import Mail, Email, To, Content
 import os
 from dotenv import load_dotenv
 from . import app, db
-from .models import Alert,User, App_alert
+from .models import Alert, App_alert
 from datetime import datetime, timedelta, date
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
@@ -53,46 +53,46 @@ class RegistrationForm(FlaskForm):
     confirm = PasswordField('Repeat Password')
 
 
-@app.route('/api/register', methods=['POST'])
-def register():
-    data = request.get_json()
-    form = RegistrationForm(data=data, csrf_enabled=False)  # We're not using CSRF here.
+#@app.route('/api/register', methods=['POST'])
+#def register():
+    #data = request.get_json()
+    #form = RegistrationForm(data=data, csrf_enabled=False)  # We're not using CSRF here.
 
-    if form.validate():
-        hashed_password = generate_password_hash(form.password.data, method='sha256')
-        new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
+    #if form.validate():
+        #hashed_password = generate_password_hash(form.password.data, method='sha256')
+        #new_user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        #db.session.add(new_user)
+        #db.session.commit()
         
-        return jsonify({"message": "Registration successful"})
+        #return jsonify({"message": "Registration successful"})
 
-    return jsonify({"message": "Validation failed", "errors": form.errors}), 400
+    #return jsonify({"message": "Validation failed", "errors": form.errors}), 400
 
 
 
-@app.route('/api/login', methods=['POST'])
-def login():
-    data = request.get_json()
-    user = User.query.filter_by(email=data['email']).first()  # Use email here
+#@app.route('/api/login', methods=['POST'])
+#def login():
+    #data = request.get_json()
+    #user = User.query.filter_by(email=data['email']).first()  # Use email here
 
-    if not user or not user.check_password(data['password']):
-        return jsonify({"message": "Invalid email or password"}), 401
+    #if not user or not user.check_password(data['password']):
+        #return jsonify({"message": "Invalid email or password"}), 401
 
-    session['email'] = user.email  # Store the email in the session
-    return jsonify({"message": "Logged in successfully"})
+    #session['email'] = user.email  # Store the email in the session
+    #return jsonify({"message": "Logged in successfully"})
 
-@app.route('/api/logout', methods=['POST'])
-def logout():
-    session.pop('email', None)
-    return jsonify({"message": "Logged out successfully"})
+#@app.route('/api/logout', methods=['POST'])
+#def logout():
+    #session.pop('email', None)
+    #return jsonify({"message": "Logged out successfully"})
 
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'email' not in session:  # Check for email in session
-            return jsonify({"message": "Please log in to access this route."}), 401
-        return f(*args, **kwargs)
-    return decorated_function
+#def login_required(f):
+    #@wraps(f)
+    d#ef decorated_function(*args, **kwargs):
+        #if 'email' not in session:  # Check for email in session
+            #return jsonify({"message": "Please log in to access this route."}), 401
+        #return f(*args, **kwargs)
+    #return decorated_function
 
 
 
