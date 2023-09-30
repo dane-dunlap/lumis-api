@@ -18,18 +18,16 @@ class User(db.Model):
         return check_password_hash(self.password_hash, password)
 
 
-class App(db.Model):
+class App_alert(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    user_email = db.Column(db.String(200), nullable=False)
     app_name = db.Column(db.String(200), unique=True, nullable=False)
+    app_country = db.Column(db.String(200), unique=True, nullable=False)
     current_version = db.Column(db.String(50), nullable=False)
     release_notes = db.Column(db.Text)
     last_updated = db.Column(db.DateTime, default=datetime.utcnow)
 
 
-class UserApp(db.Model):
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    app_id = db.Column(db.Integer, db.ForeignKey('app.id'), primary_key=True)
-    date_followed = db.Column(db.DateTime, default=datetime.utcnow)
 
 
 class Alert(db.Model):

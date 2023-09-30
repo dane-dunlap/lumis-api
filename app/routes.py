@@ -10,7 +10,7 @@ from sendgrid.helpers.mail import Mail, Email, To, Content
 import os
 from dotenv import load_dotenv
 from . import app, db
-from .models import Alert,User
+from .models import Alert,User, App_alert
 from datetime import datetime, timedelta, date
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
@@ -19,6 +19,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, validators
 from flask import session
 from functools import wraps
+from itunes_app_scraper.scraper import AppStoreScraper
 
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
@@ -295,9 +296,54 @@ def process_due_alerts():
     logging.info("Finished processing due alerts")
 
 
+@app.route('/api/create_app_alert', methods=['POST'])
+def create_app_alert():
+    data = request.json
+    app_name = data['app_name'].strip()
+    user_email = data['email'].strip()
+    country = data['country'].strip()
 
+    if not app_name or not user_email:
+        return jsonify({"message": "Fields cannot be empty"}), 400
 
+    new_app_alert = App_alert(app_name=app_name, user_email=user_email,country = country)
     
+    try:
+        db.session.add(new_app_alert)
+        db.session.commit()
+        return jsonify({"message": "Success","alert": new_app_alert.to_dict()}), 201
+    except:
+        return jsonify({"message": "There was an error saving this alert"}), 500
+
+def get_app_details(app_alert):
+    app_name = app_alert.app_name
+    country = app_alert.country
+    scraper = AppStoreScraper()
+    results = scraper.get_app_ids_for_query(app_name)
+    app_details = scraper.get_app_details(results[0])
+
+    return app_details
+
+
+
+
+@app.route('/api/send_app_alert', methods=['POST'])
+def send_lumis_app_alert():
+    alert_data = request.json.get('alert')
+    alert_id = alert_data['id']
+    alert = db.session.query(App_alert).filter_by(id=alert_id).first()
+    subject = f"Lumis Alert: {alert.app_name}"
+    recipient_email = alert.user_email
+    app_details = get_app_details(alert)
+   
+    #send_email(subject,final_summary,recipient_email,url_list,alert)
+    try:
+        return jsonify({"message": "Success"}), 201
+    except:
+        return jsonify({"message": "There was an error sending this alert to email"}), 500
+
+
+
 
 
 
